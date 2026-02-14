@@ -51,6 +51,7 @@ Die Architektur folgt dem Muster eines modernen Fahrzeug-E/E-Systems, nutzt jedo
     - **Aufgabe:** Mapping, Pfadplanung (Nav2), Hinderniserkennung.
         
 
+> Die zugehörige Ordnerstruktur findest du in der [Ordnerstruktur](docs/setup/setup_windows.md#3-einrichtung-des-projekts) der Setup-Anleitung.
 ---
 
 ## 🔄 Entwicklungsprozess
@@ -87,6 +88,7 @@ Anstatt manueller Byte-Protokolle nutzen wir das **XRCE-DDS** Protokoll:
 ---
 
 ## 🚀 Roadmap: Phase 1 (The "Basics")
+> Siehe dazu den [Projektstatus](STATUS.md) für den aktuellen Stand.
 
 Fokus auf Hardware-naher C++ Entwicklung und Konnektivität.
 
