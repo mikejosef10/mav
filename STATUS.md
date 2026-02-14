@@ -1,7 +1,8 @@
 # 📊 MAV Project Status
 
 ## 🚀 Aktueller Fokus
-- [ ] **TASK-001**: Micro-ROS Communication Bridge (Initiales Setup)
+- [ ] **TASK-001**: [Blinking-LED](docs/tasks/task-001-blinking-led.md)
+- [ ] **TASK-002**: [Micro-ROS Communication Bridge (Initiales Setup)](docs/tasks/task-002-micro-ros-bridge.md)
 
 ## 🏁 Meilensteine
 - [ ] **Phase 1: Connectivity & Drive** (Status: 5%)
