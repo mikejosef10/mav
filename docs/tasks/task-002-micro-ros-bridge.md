@@ -1,72 +1,72 @@
-# TASK-001: Micro-ROS Communication Bridge
+# TASK-002: micro-ROS Communication Bridge
 
-## 📝 Beschreibung
-Etablierung einer stabilen Kommunikationsschicht zwischen dem ESP32 (Client) und dem ROS 2 Host (Agent). Dies ist das Fundament für alle weiteren Steuerungsbefehle.
+## 📝 Description
+Establish a stable communication layer between the ESP32 (Client) and the ROS 2 host (Agent). This is the foundation for all further control commands.
 
-## 🎯 Akzeptanzkriterien (Definition of Done)
-- [ ] Der ESP32 wird vom `micro-ros-agent` erfolgreich erkannt.
-- [ ] Topic `/mav/status/heartbeat` publiziert mit ~1Hz.
-- [ ] Die physische LED am ESP32 lässt sich via `ros2 topic pub /mav/cmd/led` schalten.
-- [ ] Der Code ist im Git-Repository unter `firmware/bridge_node/` abgelegt.
+## 🎯 Acceptance Criteria (Definition of Done)
+- [ ] The ESP32 is successfully recognized by the `micro-ros-agent`.
+- [ ] Topic `/mav/status/heartbeat` publishes at ~1Hz.
+- [ ] The physical LED on the ESP32 can be toggled via `ros2 topic pub /mav/cmd/led`.
+- [ ] The code is stored in the Git repository under `firmware/mav-esp-drive/`.
 
-## ⚙️ Technische Spezifikationen
+## ⚙️ Technical Specifications
 - **Hardware:** ESP32 DevKitC
-- **Protokoll:** XRCE-DDS über Serial (USB)
-- **Baudrate:** 115.200
+- **Protocol:** XRCE-DDS over Serial (USB)
+- **Baud Rate:** 115,200
 - **ROS 2 Version:** Humble / Iron (Dockerized)
 
 ## 📌 Interfaces
-| Topic | Nachrichtentyp | Richtung |
+| Topic | Message Type | Direction |
 |:---|:---|:---|
 | `/mav/cmd/led` | `std_msgs/msg/Bool` | Subscriber (In) |
-| `/mav/status/heartbeat` | `std_msgs/msg/Header` | Publisher (Out) |
+| `/mav/status/heartbeat` | `std_msgs/msg/Int32` | Publisher (Out) |
 
 ---
-Das ist ein vernünftiger Abschluss. Wir haben jetzt ein funktionierendes Fundament, auf dem du später aufbauen kannst. Hier ist die Zusammenfassung und Dokumentation für dein **Task-002: micro-ROS Bridge**.
+This is a reasonable conclusion. We now have a working foundation that you can build upon later. Here is the summary and documentation for your **Task-002: micro-ROS Bridge**.
 
 ---
 
-## 📝 Dokumentation: micro-ROS Bridge (Task-002)
-[Offizielle Dokumenation](https://micro.ros.org/)
-[Video-Tutorial](https://www.youtube.com/watch?v=Nf7HP9y6Ovo)
+## 📝 Documentation: micro-ROS Bridge (Task-002)
+[Official Documentation](https://micro.ros.org/)
+[Video Tutorial](https://www.youtube.com/watch?v=Nf7HP9y6Ovo)
 
-### 1. Zielsetzung
+### 1. Objective
 
-Einrichtung einer bidirektionalen Kommunikationsbrücke zwischen einem ESP32 (Microcontroller) und einem ROS 2 System (Docker/Host) über eine serielle USB-Verbindung.
+Set up a bidirectional communication bridge between an ESP32 (microcontroller) and a ROS 2 system (Docker/Host) via a serial USB connection.
 
-### 2. Technische Komponenten
+### 2. Technical Components
 
 * **Hardware:** ESP32 DevKit V1
-* **Framework:** PlatformIO mit der `micro_ros_platformio` Library.
-* **ROS 2 Version:** Humble (im Docker-Container).
-* **Transport:** Serial (UART) bei **115200 Baud**.
+* **Framework:** PlatformIO with the `micro_ros_platformio` library.
+* **ROS 2 Version:** Humble (in the Docker container).
+* **Transport:** Serial (UART) at **115200 Baud**.
 
-### 3. Implementierte Funktionen
+### 3. Implemented Functions
 
-* **Heartbeat Publisher:** Sendet sekündlich einen inkrementierenden Integer auf `/mav/status/heartbeat`.
-* **LED Subscriber:** Empfängt `std_msgs/Bool` auf `/mav/cmd/led` und schaltet die interne LED (Pin 2).
-* **Auto-Reconnection:** Der ESP32 erkennt den Verlust der Verbindung zum Agenten und versucht selbstständig eine Neuinitialisierung.
+* **Heartbeat Publisher:** Sends an incrementing integer every second on `/mav/status/heartbeat`.
+* **LED Subscriber:** Receives `std_msgs/Bool` on `/mav/cmd/led` and toggles the internal LED (Pin 2).
+* **Auto-Reconnection:** The ESP32 detects the loss of connection to the agent and independently attempts a re-initialization.
 
 ---
 
-### 4. Ausführung (How-To)
+### 4. Execution (How-To)
 
-#### Schritt A: Hardware vorbereiten
+#### Step A: Prepare Hardware
 
-1. ESP32 über USB anschließen.
-2. Port identifizieren (meist `/dev/ttyUSB0` unter Linux/WSL).
+1. Connect ESP32 via USB.
+2. Identify the port (usually `/dev/ttyUSB0` under Linux/WSL).
 
-#### Schritt B: ESP32 Flashen
+#### Step B: Flash ESP32
 
 ```bash
-# Im Projektverzeichnis
+# In the project directory
 pio run --target upload
 
 ```
 
-#### Schritt C: micro-ROS Agent starten
+#### Step C: Start micro-ROS Agent
 
-Verwende das offizielle Docker-Image, um die Brücke zu schlagen:
+Use the official Docker image to bridge the gap:
 
 ```bash
 docker run -it --rm \
@@ -77,24 +77,24 @@ docker run -it --rm \
 
 ```
 
-#### Schritt D: Kommunikation testen (In einem neuen Terminal)
+#### Step D: Test Communication (In a new terminal)
 
-* **Topics auflisten:** `ros2 topic list`
-* **Daten empfangen:** `ros2 topic echo /mav/status/heartbeat`
-* **LED schalten:** `ros2 topic pub --once /mav/cmd/led std_msgs/msg/Bool "{data: true}"`
-
----
-
-### 5. Bekannte Schwierigkeiten & Lösungen
-
-* **Handshake-Verzögerung:** Der ESP32 und der Agent brauchen oft 2-3 Anläufe, um die XRCE-DDS Session zu synchronisieren. **Lösung:** Eine robuste `loop()`, die bei Fehlern `fini`-Funktionen aufruft und neu startet.
-* **Speicher-Management:** micro-ROS auf Mikrocontrollern ist empfindlich bei der Speicherreservierung. **Lösung:** Der `rclc_executor` wurde explizit auf 2 Handles limitiert.
-* **WSL2/Docker USB-Passthrough:** Unter Windows muss das Gerät per `usbipd` aktiv an die WSL-Instanz "attached" werden, damit der Docker-Container darauf zugreifen kann.
+* **List topics:** `ros2 topic list`
+* **Receive data:** `ros2 topic echo /mav/status/heartbeat`
+* **Toggle LED:** `ros2 topic pub --once /mav/cmd/led std_msgs/msg/Bool "{data: true}"`
 
 ---
 
-### 6. Verbesserungspotenziale für später
+### 5. Known Difficulties & Solutions
 
-* **Baudrate erhöhen:** Wechsel auf `460800` oder `921600` für geringere Latenz.
-* **Statische IP/WiFi:** Umstieg auf UDP (WLAN), falls das USB-Kabel im Weg ist.
-* **Parameter-Server:** Implementierung von ROS-Parametern, um z.B. Blinkfrequenzen zur Laufzeit zu ändern.
+* **Handshake Delay:** The ESP32 and the agent often take 2-3 attempts to synchronize the XRCE-DDS session. **Solution:** A robust `loop()` that calls `fini` functions and restarts on errors.
+* **Memory Management:** micro-ROS on microcontrollers is sensitive to memory allocation. **Solution:** The `rclc_executor` was explicitly limited to 2 handles.
+* **WSL2/Docker USB Pass-through:** On Windows, the device must be actively "attached" to the WSL instance via `usbipd` so the Docker container can access it.
+
+---
+
+### 6. Potential Improvements for Later
+
+* **Increase Baud Rate:** Switch to `460800` or `921600` for lower latency.
+* **Static IP/WiFi:** Switch to UDP (WLAN) if the USB cable is in the way.
+* **Parameter Server:** Implementation of ROS parameters to change e.g., blink frequencies at runtime.

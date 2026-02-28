@@ -1,74 +1,73 @@
+## 🔌 Power Supply & Prototyping
 
-## 🔌 Energieversorgung & Prototyping
+These components form the physical backbone for your first Hardware-in-the-Loop (HIL) tests.
 
-Diese Komponenten bilden das physikalische Rückgrat für deine ersten Hardware-in-the-Loop (HIL) Tests.
-
-| Komponente | Spezifikation / Kapazität | Einsatz im MAV-Projekt |
+| Component | Specification / Capacity | Use in MAV Project |
 | --- | --- | --- |
-| **Netzteilmodul** | Input: 6.5-12V (DC) / Output: 3.3V oder 5V (umschaltbar) | Versorgung der Schiene am Breadboard für MCU und Sensoren. |
-| **830-Point Breadboard** | 830 Kontakte, Standard 2.54mm Pitch | Schneller Aufbau von Testschaltungen ohne Löten. |
-| **Jumper Wire Set** | Mix aus M/M, F/M und starren Drähten | Signalverbindung zwischen ESP32/STM32 und Sensorik. |
+| **Power Supply Module** | Input: 6.5-12V (DC) / Output: 3.3V or 5V (switchable) | Supplying the breadboard rail for MCU and sensors. |
+| **830-Point Breadboard** | 830 contacts, standard 2.54mm pitch | Fast assembly of test circuits without soldering. |
+| **Jumper Wire Set** | Mix of M/M, F/M and rigid wires | Signal connection between ESP32/STM32 and sensors. |
 
 ---
 
-## 🚦 Mensch-Maschine-Schnittstelle (HMI) & Indikatoren
+## 🚦 Human-Machine Interface (HMI) & Indicators
 
-Für einen autonomen Roboter ist visuelles und akustisches Feedback (z. B. ROS-Status-Diagnose) essenziell.
+For an autonomous robot, visual and acoustic feedback (e.g., ROS status diagnostics) is essential.
 
-* **LEDs (Bunt & RGB):** * **Spec:** Standard 5mm, ca. 2V Vorwärtsspannung (Farbe beachten), 20mA max.
-* **Projekt-Nutzen:** Visualisierung von ROS 2 Zuständen (z. B. Grün = `Active`, Blau = `Wait for Agent`, Rot = `Emergency Stop`). Die **RGB-LED** eignet sich perfekt für Error-Codes via PWM.
-
-
-* **Summer (Aktiv/Passiv):**
-* **Aktiv:** Erzeugt Ton bei konstanter Spannung (Logik-High).
-* **Passiv:** Benötigt PWM-Signal zur Tonerzeugung (perfekt zum Testen deiner PWM-Treiber-Klasse).
+* **LEDs (Colored & RGB):** * **Spec:** Standard 5mm, approx. 2V forward voltage (note color), 20mA max.
+* **Project Benefit:** Visualization of ROS 2 states (e.g., Green = `Active`, Blue = `Wait for Agent`, Red = `Emergency Stop`). The **RGB LED** is perfect for error codes via PWM.
 
 
-* **Buttons (Taster):**
-* **Spec:** 12x12mm taktile Schalter.
-* **Projekt-Nutzen:** Manueller Reset oder "Start Mission" Trigger.
+* **Buzzer (Active/Passive):**
+* **Active:** Generates sound at constant voltage (Logic-High).
+* **Passive:** Requires PWM signal for sound generation (perfect for testing your PWM driver class).
+
+
+* **Buttons (Pushbuttons):**
+* **Spec:** 12x12mm tactile switches.
+* **Project Benefit:** Manual reset or "Start Mission" trigger.
 
 
 
 ---
 
-## 🧠 Signalverarbeitung & Logik-ICs
+## 🧠 Signal Processing & Logic ICs
 
-Diese Bauteile helfen dir, die Hardware-Abstraktion (HAL) für komplexe Funktionen zu schreiben.
+These components help you write the Hardware Abstraction Layer (HAL) for complex functions.
 
 * **74HC595 (8-Bit Shift Register):**
-* **Spec:** Serial-In, Parallel-Out. Ermöglicht die Steuerung von 8 Ausgängen über nur 3 Pins.
-* **Projekt-Nutzen:** Erweiterung der GPIOs für Status-Displays, falls die Pins am ESP32 knapp werden.
+* **Spec:** Serial-In, Parallel-Out. Allows control of 8 outputs via only 3 pins.
+* **Project Benefit:** Expansion of GPIOs for status displays if pins on the ESP32 become scarce.
 
 
-* **4N35 Optokoppler:**
-* **Spec:** Galvanische Trennung mittels Licht.
-* **Projekt-Nutzen:** Kritisch für die **Not-Aus-Logik**. Er trennt den empfindlichen MCU-Kreis vom (späteren) Lastkreis der Saugmotoren.
+* **4N35 Optocoupler:**
+* **Spec:** Galvanic isolation using light.
+* **Project Benefit:** Critical for **emergency stop logic**. It separates the sensitive MCU circuit from the (later) load circuit of the vacuum motors.
 
 
-* **PN2222 (NPN-Transistoren):**
+* **PN2222 (NPN Transistors):**
 * **Spec:** Ic max 600mA.
-* **Projekt-Nutzen:** Schalten von kleinen Lasten (wie dem aktiven Summer), die den GPIO-Strom des MCUs überschreiten würden.
+* **Project Benefit:** Switching small loads (like the active buzzer) that exceed the GPIO current of the MCU.
 
 
 
 ---
 
-## 🌡 Sensorik (Analog-Inputs)
+## 🌡 Sensors (Analog Inputs)
 
-Ideal zum Testen deiner ADC-Treiber (Analog-to-Digital Converter) in micro-ROS.
+Ideal for testing your ADC drivers (Analog-to-Digital Converter) in micro-ROS.
 
-* **Fotowiderstand (LDR):** Misst Lichtintensität. Kann für eine einfache "Unter-Möbel-Erkennung" genutzt werden.
-* **Thermistor (NTC):** Temperaturabhängiger Widerstand. Ideal für das Monitoring der **Battery-Health** oder MCU-Temperatur (wird in `/battery_state` publiziert).
-* **Präzisionspotentiometer:** Zur Simulation von Sensorwerten (z. B. Distanz-Emulation), bevor du einen echten Lidar/Ultraschallsensor hast.
+* **Photoresistor (LDR):** Measures light intensity. Can be used for simple "under-furniture detection".
+* **Thermistor (NTC):** Temperature-dependent resistor. Ideal for monitoring **battery health** or MCU temperature (published in `/battery_state`).
+* **Precision Potentiometer:** For simulating sensor values (e.g., distance emulation) before you have a real Lidar/ultrasonic sensor.
 
 ---
 
-## 🛠 Fehlende Komponenten für die "Drive-Unit"
+## 🛠 Missing Components for the "Drive-Unit"
 
-Da dein Ziel ein "Vakuum-Roboter" ist, fällt mir als "Peer" etwas auf: Das Kit ist fantastisch für die Logik, aber für die **Phase 1 (Drive-Unit)** deiner Roadmap fehlen noch zwei entscheidende Dinge:
+Since your goal is a "vacuum robot," I noticed something as a "peer": The kit is fantastic for logic, but for **Phase 1 (Drive-Unit)** of your roadmap, two crucial things are still missing:
 
-1. **H-Brücke (Motortreiber):** z. B. ein L298N oder DRV8833, um die tatsächlichen Motoren anzusteuern.
-2. **Motoren & Encoder:** Um echtes Feedback für `/odom` (Odometrie) zu generieren.
+1. **H-Bridge (Motor Driver):** e.g., an L298N or DRV8833, to drive the actual motors.
+2. **Motors & Encoders:** To generate real feedback for `/odom` (odometry).
 
-> **Pro-Tipp für dein C++20 Vorhaben:** Nutze die Widerstände aus dem Kit, um **Pull-Up/Pull-Down** Schaltungen hardwareseitig zu bauen, anstatt dich nur auf interne MCU-Pullups zu verlassen – das erhöht die Signalstabilität für deine ROS 2 Kommunikation massiv.
+> **Pro-Tip for your C++20 project:** Use the resistors from the kit to build **pull-up/pull-down** circuits in hardware rather than relying solely on internal MCU pull-ups – this massively increases signal stability for your ROS 2 communication.

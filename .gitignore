@@ -1,0 +1,63 @@
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# VS Code
+.vscode/
+*.code-workspace
+.vscode-test/
+.vscode-server/
+.history/
+*.vsix
+
+# Obsidian
+.obsidian/workspace.json
+
+# ROS2 build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# PlatformIO
+.pio/
+*/.pio/
+.pioenvs/
+.piolibdeps/
+.pio/build/
+.pio/libdeps/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# C++ Build artifacts
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.elf
+*.bin
+*.hex
+*.map
+
+# Node (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

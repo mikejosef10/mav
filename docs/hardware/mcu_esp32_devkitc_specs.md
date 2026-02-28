@@ -1,55 +1,52 @@
 Link: [ESP32S Dev Kit](https://www.az-delivery.de/en/products/esp32-nodemcu-module-wlan-wifi-dev-kit-c-development-board-mit-cp2102-und-usb-c-anschluss-esp-32-esp32-wroom-32-kompatibel-mit-arduino?_pos=1&_psq=ESP32+NodeMCU+Module+WLAN+WiFi+Dev+Kit+C+Development+Board+mit+CP2102+und+USB-C+Anschluss&_ss=e&_v=1.0&variant=46038922297611)
 
-Kostenloses Ebook: [Ebook](https://www.az-delivery.de/en/products/esp32s-dev-kit-c-v4-nodemcu-wlan-development-board-kompatibel-mit-arduino-nachfolger-modul-von-esp32s-dev-kit-c-v2-1?_pos=1&_psq=ESP32+DEV+Kit+C+V2+ebook&_ss=e&_v=1.0)
-## 🧠 Recheneinheit & Speicher (The "Brain")
+Free Ebook: [Ebook](https://www.az-delivery.de/en/products/esp32s-dev-kit-c-v4-nodemcu-wlan-development-board-kompatibel-mit-arduino-nachfolger-modul-von-esp32s-dev-kit-c-v2-1?_pos=1&_psq=ESP32+DEV+Kit+C+V2+ebook&_ss=e&_v=1.0)
+## 🧠 Computing Unit & Memory (The "Brain")
 
-Für ein Echtzeitsystem wie das MAV ist die Rechenleistung entscheidend, um Odometrie-Daten zu berechnen und gleichzeitig den ROS-Stack zu bedienen.
+For a real-time system like the MAV, computing power is crucial for calculating odometry data while simultaneously serving the ROS stack.
 
-| Feature | Spezifikation | Relevanz für MAV |
+| Feature | Specification | Relevance for MAV |
 | --- | --- | --- |
-| **Prozessor** | Xtensa® Dual-Core 32-bit LX6 | Ermöglicht Multithreading (z.B. Core 0 für micro-ROS, Core 1 für Motor-Regelung). |
-| **Taktfrequenz** | Bis zu 240 MHz | Hohe Performance für moderne C++20 Features (Ranges, Lambdas). |
-| **SRAM** | 520 KB | Ausreichend Puffer für XRCE-DDS (micro-ROS) Middleware. |
-| **Flash** | 4 MB | Genug Platz für umfangreiche Firmware und Log-Daten. |
+| **Processor** | Xtensa® Dual-Core 32-bit LX6 | Enables multithreading (e.g., Core 0 for micro-ROS, Core 1 for motor control). |
+| **Clock Frequency** | Up to 240 MHz | High performance for modern C++20 features (Ranges, Lambdas). |
+| **SRAM** | 520 KB | Sufficient buffer for XRCE-DDS (micro-ROS) middleware. |
+| **Flash** | 4 MB | Enough space for extensive firmware and log data. |
 
 ---
 
-## 🌐 Konnektivität & Kommunikation
+## 🌐 Connectivity & Communication
 
-Da dein Projekt auf eine verteilte Architektur setzt, bietet der ESP32 hier maximale Flexibilität.
+Since your project relies on a distributed architecture, the ESP32 offers maximum flexibility here.
 
-* **USB-Schnittstelle:** USB-C (CP2102 Bridge). Dies ist deine primäre Verbindung zum Raspberry Pi (micro-ROS Agent).
-* **WLAN (802.11 b/g/n):** Ermöglicht OTA (Over-the-Air) Updates oder Telemetrie-Streaming ohne Kabel.
-* **Bluetooth (v4.2 BR/EDR & BLE):** Optional für eine Smartphone-Fernsteuerung oder Setup-App.
-* **Bus-Systeme:**
-* **2x I2C:** Für Sensoren (IMU, ToF-Sensoren).
-* **3x SPI:** Für SD-Karten-Logging oder High-Speed-Sensoren.
-* **3x UART:** Einer belegt durch USB, zwei frei für Peripherie (z.B. Lidar).
-
-
+* **USB Interface:** USB-C (CP2102 Bridge). This is your primary connection to the Raspberry Pi (micro-ROS agent).
+* **WLAN (802.11 b/g/n):** Enables OTA (Over-the-Air) updates or telemetry streaming without cables.
+* **Bluetooth (v4.2 BR/EDR & BLE):** Optional for a smartphone remote control or setup app.
+* **Bus Systems:**
+* **2x I2C:** For sensors (IMU, ToF sensors).
+* **3x SPI:** For SD card logging or high-speed sensors.
+* **3x UART:** One occupied by USB, two free for peripherals (e.g., Lidar).
 
 ---
 
-## ⚙️ I/O & Sensorik-Schnittstellen (Hardware-Abstraktion)
+## ⚙️ I/O & Sensor Interfaces (Hardware Abstraction)
 
-In deiner Hardware-Abstraktionsschicht wirst du diese Pins direkt ansprechen:
+In your hardware abstraction layer, you will address these pins directly:
 
-* **PWM (MCPWM & LEDC):** Der ESP32 hat spezielle Motor-PWM-Einheiten (MCPWM), die perfekt für die Ansteuerung von H-Brücken (Motoren) geeignet sind.
-* **ADC (12-Bit):** 18 Kanäle zur Überwachung der Akkuspannung (via Spannungsteiler aus deinem Kit).
-* **Hardware-Encoder:** Der ESP32 besitzt integrierte Puls-Zähler (PCNT), die Encodersignale von Motoren hardwareseitig zählen, ohne die CPU zu belasten – essenziell für präzise Odometrie.
-* **GPIOs:** 3.3V Logik-Level (Vorsicht: Nicht 5V tolerant!).
-
----
-
-## 🛠 Integration in die MAV-Architektur
-
-In deinem ADR (Architecture Decision Record) kannst du diesen ESP32 wie folgt einordnen:
-
-1. **Rolle:** "Low-Level Controller" (Real-Time Actor/Sensor Hub).
-2. **Middleware:** Führt den **micro-ROS Client** aus. Nutzt das XRCE-DDS Protokoll über die USB-C serielle Schnittstelle.
-3. **Vorteil gegenüber Arduino Uno:** Der ESP32 kann echte **FreeRTOS-Tasks** nutzen. Das erlaubt es dir, die Motorregelung (PID) in einem hochpriorisierten Task laufen zu lassen, während der ROS-Datenaustausch in einem anderen Task stattfindet, ohne das Timing zu stören.
+* **PWM (MCPWM & LEDC):** The ESP32 has special motor PWM units (MCPWM), which are perfect for controlling H-bridges (motors).
+* **ADC (12-bit):** 18 channels for monitoring battery voltage (via voltage divider from your kit).
+* **Hardware Encoder:** The ESP32 has integrated pulse counters (PCNT) that count encoder signals from motors in hardware without burdening the CPU – essential for precise odometry.
+* **GPIOs:** 3.3V logic level (Caution: Not 5V tolerant!).
 
 ---
 
+## 🛠 Integration into the MAV Architecture
 
-**Kleiner Tipp vom "Peer":** Da du das AZDelivery Board hast, achte darauf, dass es im Breadboard oft sehr breit ist (nur eine Lochreihe bleibt auf einer Seite frei). Nutze am besten zwei Breadboards nebeneinander oder Jumperkabel von unten, um Platz für deine Sensoren zu haben.
+In your ADR (Architecture Decision Record), you can classify this ESP32 as follows:
+
+1. **Role:** "Low-Level Controller" (Real-Time Actor/Sensor Hub).
+2. **Middleware:** Runs the **micro-ROS Client**. Uses the XRCE-DDS protocol over the USB-C serial interface.
+3. **Advantage over Arduino Uno:** The ESP32 can use real **FreeRTOS tasks**. This allows you to run motor control (PID) in a high-priority task while ROS data exchange takes place in another task without disturbing the timing.
+
+---
+
+**Tip from the "Peer":** Since you have the AZDelivery board, note that it is often very wide on the breadboard (only one row of holes remains free on one side). It's best to use two breadboards side-by-side or jumper cables from below to have room for your sensors.

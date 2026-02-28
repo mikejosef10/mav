@@ -1,14 +1,14 @@
-# Installation von WSL 2
-- **Ubuntu-Paket ziehen:** Gib in der PowerShell (Admin) folgendes ein:
+# Installation of WSL 2
+- **Download Ubuntu Package:** Enter the following in PowerShell (Admin):
    PowerShell
     
    ```
     curl.exe -L -o ubuntu.appx https://aka.ms/wslubuntu2204
     ```
     
-    _(Das lädt Ubuntu 22.04 herunter, genau die Version, die perfekt zu deinem ROS 2 Humble Docker-Setup passt.)_
+    _(This downloads Ubuntu 22.04, the version that perfectly matches your ROS 2 Humble Docker setup.)_
     
-- **Installieren:**
+- **Install:**
     
     PowerShell
     
@@ -16,35 +16,35 @@
     Add-AppxPackage .\ubuntu.appx
     ```
    
-- **Starten:** Suche jetzt im Startmenü nach **"Ubuntu"** und klicke darauf. Es öffnet sich ein schwarzes Fenster, das die Installation abschließt (hier vergibst du dann deinen Benutzernamen und Passwort).
+- **Start:** Now search for **"Ubuntu"** in the Start menu and click on it. A black window will open to complete the installation (where you then assign your username and password).
 ---
 
-# 📑 Anleitung: WSL 2 (Ubuntu) von C: nach D: umziehen
+# 📑 Guide: Moving WSL 2 (Ubuntu) from C: to D:
 
-Diese Anleitung beschreibt, wie du deine gesamte Linux-Entwicklungsumgebung inklusive aller Docker-Daten auf eine andere Festplatte (z. B. Laufwerk **D:**) verschiebst, um Platz auf der Systemplatte **C:** zu sparen.
+This guide describes how to move your entire Linux development environment, including all Docker data, to another hard drive (e.g., drive **D:**) to save space on the system drive **C:**.
 
-## ⚠️ Wichtige Vorab-Checks
+## ⚠️ Important Pre-checks
 
-1. **Name der Distribution:** Prüfe in der PowerShell mit `wsl -l -v`, wie deine Instanz genau heißt (meist `Ubuntu`).
-2. **Backups:** Falls du wichtige Dateien außerhalb von Git hast, stelle sicher, dass sie gesichert sind (obwohl der Export-Befehl ein Backup ist).
-3. **Speicherplatz:** Stelle sicher, dass auf Laufwerk **D:** genug Platz für die `.tar`-Datei (Backup) **und** die spätere `.vhdx`-Datei (die neue virtuelle Festplatte) vorhanden ist.
+1. **Distribution Name:** Check in PowerShell with `wsl -l -v` what exactly your instance is named (usually `Ubuntu`).
+2. **Backups:** If you have important files outside of Git, make sure they are backed up (although the export command itself is a backup).
+3. **Storage Space:** Ensure there is enough space on drive **D:** for the `.tar` file (backup) **and** the subsequent `.vhdx` file (the new virtual hard drive).
 
 ---
 
-## 🛠 Schritt-für-Schritt-Prozess
+## 🛠 Step-by-Step Process
 
-### 1. WSL beenden
+### 1. Shutdown WSL
 
-Schließe alle Ubuntu-Terminals und VS Code Fenster. Öffne eine **PowerShell (Administrator)** und beende alle Instanzen:
+Close all Ubuntu terminals and VS Code windows. Open a **PowerShell (Administrator)** and terminate all instances:
 
 ```powershell
 wsl --shutdown
 
 ```
 
-### 2. Export der aktuellen Instanz
+### 2. Export Current Instance
 
-Erstelle einen Ordner auf **D:** für dein Backup und exportiere das System. Dies kann je nach Größe des Projekts einige Minuten dauern.
+Create a folder on **D:** for your backup and export the system. This may take several minutes depending on the project size.
 
 ```powershell
 mkdir D:\wsl_backup
@@ -52,18 +52,18 @@ wsl --export Ubuntu D:\wsl_backup\ubuntu_backup.tar
 
 ```
 
-### 3. Alte Instanz von C: entfernen
+### 3. Remove Old Instance from C:
 
-Jetzt wird die Instanz auf C: gelöscht. Dies gibt den Speicherplatz auf deiner Systemplatte sofort frei.
+Now delete the instance on C:. This will immediately free up space on your system drive.
 
 ```powershell
 wsl --unregister Ubuntu
 
 ```
 
-### 4. Import auf die neue Festplatte (D:)
+### 4. Import to New Hard Drive (D:)
 
-Erstelle den Zielordner, in dem Ubuntu ab jetzt "leben" soll. Dann importiere das Backup dorthin:
+Create the destination folder where Ubuntu should "live" from now on. Then import the backup there:
 
 ```powershell
 mkdir D:\WSL\Ubuntu
@@ -71,20 +71,20 @@ wsl --import Ubuntu D:\WSL\Ubuntu D:\wsl_backup\ubuntu_backup.tar
 
 ```
 
-### 5. Standard-Benutzer wiederherstellen
+### 5. Restore Default User
 
-Standardmäßig loggt dich WSL nach einem Import als `root` ein. Um deinen gewohnten User wieder einzustellen:
+By default, WSL logs you in as `root` after an import. To restore your usual user:
 
 ```powershell
-# Ersetze 'deinname' durch deinen echten Linux-Benutzernamen
-ubuntu2204 config --default-user deinname
+# Replace 'yourname' with your actual Linux username
+ubuntu2204 config --default-user yourname
 
 ```
 
-> **Tipp:** Falls der Befehl `ubuntu2204` nicht funktioniert, kannst du in der Datei `/etc/wsl.conf` innerhalb von Ubuntu folgendes eintragen:
+> **Tip:** If the command `ubuntu2204` does not work, you can enter the following in the `/etc/wsl.conf` file within Ubuntu:
 > ```ini
 > [user]
-> default=deinname
+> default=yourname
 > 
 > ```
 > 
@@ -92,20 +92,20 @@ ubuntu2204 config --default-user deinname
 
 ---
 
-## 🔄 Docker-Anbindung prüfen
+## 🔄 Check Docker Connection
 
-Da Docker Desktop mit WSL verknüpft ist, musst du sicherstellen, dass die Verbindung noch steht:
+Since Docker Desktop is linked with WSL, you must ensure the connection is still active:
 
-1. Starte **Docker Desktop**.
-2. Gehe zu **Settings > Resources > WSL Integration**.
-3. Stelle sicher, dass der Schalter bei **Ubuntu** aktiviert ist.
-4. Klicke auf **Apply & Restart**.
+1. Start **Docker Desktop**.
+2. Go to **Settings > Resources > WSL Integration**.
+3. Ensure the switch for **Ubuntu** is enabled.
+4. Click **Apply & Restart**.
 
 ---
 
-## 📁 Aufräumen
+## 📁 Cleanup
 
-Wenn alles funktioniert und du dein MAV-Projekt in VS Code wieder öffnen kannst, kannst du die temporäre Backup-Datei löschen:
+If everything works and you can reopen your MAV project in VS Code, you can delete the temporary backup file:
 
 ```powershell
 rm D:\wsl_backup\ubuntu_backup.tar

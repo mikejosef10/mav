@@ -10,12 +10,12 @@
 
 #include "StatusLed.hpp"
 
-// --- Konfiguration ---
-#define LED_PIN 2 // Builtin LED beim ESP32 DevKit V1
+// --- Configuration ---
+#define LED_PIN 2 // Builtin LED for ESP32 DevKit V1
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){ return false; }}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){}}
 
-// --- Globale Objekte ---
+// --- Global Objects ---
 StatusLed statusLed(LED_PIN);
 
 rcl_publisher_t publisher;
@@ -31,7 +31,7 @@ rcl_timer_t timer;
 
 // --- Callbacks ---
 
-// Fehlerbehandlung: Blinkt hektisch, wenn micro-ROS fehlschlägt
+// Error handling: Blinks frantically if micro-ROS fails
 void error_loop(){
   while(1){
     statusLed.on(); delay(100);
@@ -48,7 +48,7 @@ void timer_callback(rcl_timer_t * timer, int64_t last_call_time) {
   }
 }
 
-// Subscription Callback: LED Steuerung
+// Subscription Callback: LED Control
 void subscription_callback(const void * msgin) {
   const std_msgs__msg__Bool * msg = (const std_msgs__msg__Bool *)msgin;
   if (msg->data) {
@@ -94,14 +94,14 @@ bool init_microros() {
 }
 
 void setup() {
-    // Serial-Initialisierung verzögern, um Boot-Logs abzuwarten
+    // Delay serial initialization to wait for boot logs
     delay(1000); 
     Serial.begin(115200);
     set_microros_serial_transports(Serial);
     
     statusLed.begin();
     
-    // Signalisierung: "Ich bin bereit zum Verbinden"
+    // Signaling: "I am ready to connect"
     statusLed.on(); delay(1000); statusLed.off(); 
 }
 
@@ -113,14 +113,14 @@ void loop() {
             micro_ros_init_successful = true;
             statusLed.off(); 
         } else {
-            // Vollständiger Cleanup bei Fehler
+            // Full cleanup on error
             rclc_executor_fini(&executor);
             rcl_publisher_fini(&publisher, &node);
             rcl_subscription_fini(&subscriber, &node);
             rcl_node_fini(&node);
             rclc_support_fini(&support);
             
-            // Blink-Code für Fehler: Langsamer, um CPU zu entlasten
+            // Blink code for error: Slower to reduce CPU load
             statusLed.on(); delay(500); statusLed.off(); delay(500);
         }
     } else {

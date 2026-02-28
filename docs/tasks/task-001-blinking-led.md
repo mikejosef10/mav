@@ -1,42 +1,42 @@
 # Task 001: Blinking LED & Toolchain Validation
 
-## 📝 Übersicht
+## 📝 Overview
 
-Dieses Ticket markiert den "Hello World"-Meilenstein für die **MAV Drive Unit**. Ziel war es nicht nur, eine LED zum Leuchten zu bringen, sondern die gesamte Entwicklungsumgebung (Windows -> WSL -> ESP32) sowie die modulare C++ Struktur zu validieren.
+This ticket marks the "Hello World" milestone for the **MAV Drive Unit**. The goal was not only to make an LED light up but also to validate the entire development environment (Windows -> WSL -> ESP32) as well as the modular C++ structure.
 
-**Status:** ✅ Abgeschlossen
+**Status:** ✅ Completed
 
-**Komponente:** `firmware/drive_unit`
+**Component:** `firmware/mav-esp-drive`
 
 **Hardware:** ESP32 DevKitC
 
 ---
 
-## 🎯 Lernziele & Anforderungen
+## 🎯 Learning Objectives & Requirements
 
-* **Toolchain-Check:** Funktioniert der USB-Durchgriff von Windows zu WSL via `usbipd`?
-* **Build-System:** Kompiliert PlatformIO innerhalb der Docker/WSL-Umgebung korrekt?
-* **Hardware-Abstraktion:** Anwendung des "Clean Code"-Prinzips durch Kapselung der LED-Logik in einer Klasse (statt nackter `digitalWrite`-Aufrufe).
+* **Toolchain Check:** Does the USB pass-through from Windows to WSL via `usbipd` work?
+* **Build System:** Does ESP-IDF/PlatformIO compile correctly within the Docker/WSL environment?
+* **Hardware Abstraction:** Application of the "Clean Code" principle by encapsulating the LED logic in a class (instead of naked `digitalWrite` calls).
 
 ---
 
-## 🛠 Implementierungsdetails
+## 🛠 Implementation Details
 
-### 1. Hardware-Anbindung (Windows Host)
+### 1. Hardware Connection (Windows Host)
 
-Da die Entwicklung in der WSL-Umgebung stattfindet, muss die serielle Schnittstelle des ESP32 vom Windows-Host an WSL "durchgereicht" werden. Dafür wurde ein Helper-Script erstellt:
+Since development takes place in the WSL environment, the ESP32's serial interface must be "passed through" from the Windows host to WSL. A helper script was created for this:
 
-**Datei:** `firmware/drive_unit/helper_scripts/esp_attach.bat`
+**File:** `firmware/mav-esp-drive/helper_scripts/esp_attach.bat`
 
-> Dieses Skript automatisiert das Identifizieren der `VID:PID` und das Binden des Geräts an die WSL-Instanz.
+> This script automates identifying the `VID:PID` and binding the device to the WSL instance.
 
-### 2. Software-Architektur (Firmware)
+### 2. Software Architecture (Firmware)
 
-Entsprechend der Projektphilosophie wurde die LED-Logik in eine eigene Library ausgelagert.
+In accordance with the project philosophy, the LED logic was outsourced to its own library.
 
-#### Die `StatusLed` Klasse
+#### The `StatusLed` Class
 
-Anstatt Pins global zu definieren, kapselt `StatusLed` die Hardware-Details. Dies ermöglicht es, später die LED-Logik (z.B. für Blink-Muster oder PWM-Dimmen) zu erweitern, ohne den `main.cpp` Code anzupassen.
+Instead of defining pins globally, `StatusLed` encapsulates the hardware details. This allows for future expansion of the LED logic (e.g., for blinking patterns or PWM dimming) without modifying the `main.cpp` code.
 
 ```cpp
 // StatusLed.hpp
@@ -56,30 +56,30 @@ private:
 
 #### Main Logic
 
-Die `main.cpp` nutzt die Klasse und bietet über den Seriellen Monitor (115200 Baud) Telemetrie-Daten an, um den Status der Drive Unit zu überwachen.
+`main.cpp` uses the class and provides telemetry data via the Serial Monitor (115200 baud) to monitor the status of the Drive Unit.
 
 ---
 
-## 💡 Begründungen & Entscheidungen (ADR-Light)
+## 💡 Rationale & Decisions (ADR-Light)
 
-* **Warum eine Klasse für eine einfache LED?** Im Sinne des Projekts ("Software läuft isoliert von Hardware") verhindern wir so, dass Hardware-spezifische Arduino-Befehle überall im Code verteilt sind. Die `main.cpp` weiß nur, dass es ein Objekt gibt, das `on()` oder `off()` kann.
-* **Warum `usbipd`?** Es ermöglicht eine nahtlose Integration in die Linux-basierte ROS 2 Toolchain, während die gewohnte Windows-Oberfläche für die Entwicklung genutzt werden kann.
-* **Code-Kommentar (LED AUS):** Im aktuellen Stand ist der "Aus"-Teil auskommentiert, um ein dauerhaftes Leuchten zur ersten Validierung der Stromversorgung und des Pin-Mappings zu erzwingen.
-
----
-
-## 🏁 Verifizierung
-
-1. **Build:** `pio run` via Terminal erfolgreich.
-2. **Upload:** `esp_attach.bat` ausgeführt -> `pio run -t upload` erfolgreich.
-3. **Funktion:** Die onboard LED (Pin 2) leuchtet dauerhaft.
-4. **Telemetrie:** Serial Monitor zeigt korrekt "MAV Drive Unit gestartet..." an.
+* **Why a class for a simple LED?** In the spirit of the project ("Software runs isolated from hardware"), we prevent hardware-specific Arduino commands from being distributed throughout the code. `main.cpp` only knows that there is an object that can `on()` or `off()`.
+* **Why `usbipd`?** It enables seamless integration into the Linux-based ROS 2 toolchain while the familiar Windows interface can be used for development.
+* **Code Comment (LED OFF):** In the current state, the "off" part is commented out to force a permanent light for the first validation of the power supply and pin mapping.
 
 ---
 
-## ⏭ Nächste Schritte
+## 🏁 Verification
 
-Nachdem die Hardware-Basis steht, werden wir in **Task 002** die Brücke zu ROS 2 schlagen:
+1. **Build:** `pio run` via terminal successful.
+2. **Upload:** `esp_attach.bat` executed -> `pio run -t upload` successful.
+3. **Function:** The onboard LED (Pin 2) is permanently lit.
+4. **Telemetry:** Serial Monitor correctly shows "MAV Drive Unit started...".
 
-* Einrichtung des micro-ROS Agents.
-* Erstellen eines Publishers, der den LED-Status als `std_msgs/Bool` an den ROS-Graph sendet.
+---
+
+## ⏭ Next Steps
+
+After the hardware foundation is in place, we will bridge the gap to ROS 2 in **Task 002**:
+
+* Setup of the micro-ROS agent.
+* Creation of a publisher that sends the LED status as `std_msgs/Bool` to the ROS graph.

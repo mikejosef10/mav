@@ -1,101 +1,101 @@
-# Projekt: "Mini-Auto" Vakuum-Plattform (MAV)
+# Project: "Mini-Auto" Vacuum Platform (MAV)
 
-## 📝 Projektübersicht
+## 📝 Project Overview
 
-Das Ziel dieses Projekts ist die Entwicklung eines modularen, autonomen Roboterstaubsaugers, der nach den Software-Standards moderner autonomer Fahrzeuge (AV) entwickelt wird. Anstatt eines monolithischen Systems wird eine **verteilte Architektur** genutzt, die Skalierbarkeit für spätere Erweiterungen (Lidar, SLAM, Compute-Offloading) bietet.
+The goal of this project is to develop a modular, autonomous robotic vacuum cleaner, developed according to the software standards of modern autonomous vehicles (AV). Instead of a monolithic system, a **distributed architecture** is used, providing scalability for future expansions (Lidar, SLAM, Compute-Offloading).
 
-### Kernphilosophie
+### Core Philosophy
 
-- **Hardware-Abstraktion:** Software läuft isoliert von der Hardware durch definierte Interfaces.
+- **Hardware Abstraction:** Software runs isolated from the hardware through defined interfaces.
     
-- **Native ROS 2 Integration:** Durchgängige Kommunikation vom High-Level-Algorithmus bis zum Motor-Register mittels **micro-ROS**.
+- **Native ROS 2 Integration:** Seamless communication from high-level algorithms down to motor registers using **micro-ROS**.
     
-- **Modularität:** Jede Komponente (Antrieb, Sensorik, Logik) ist ein eigenständiger Service.
+- **Modularity:** Each component (drive, sensors, logic) is an independent service.
     
 
 ---
 
-## 🛠 Technologie-Stack & Standards
+## 🛠 Technology Stack & Standards
 
-|**Bereich**|**Technologie / Standard**|**Begründung**|
+|**Area**|**Technology / Standard**|**Reasoning**|
 |---|---|---|
-|**Sprachen**|C++20 / C|Performance und moderne Sprachfeatures (Smart Pointers, Ranges).|
-|**Middleware**|**ROS 2 (Humble/Iron)**|Industriestandard für Robotik; nutzt DDS für zuverlässige Kommunikation.|
-|**Kommunikation**|**micro-ROS (USB/Serial)**|Native ROS 2 Nodes auf MCUs; nutzt XRCE-DDS für ressourceneffiziente Pub/Sub-Kommunikation.|
-|**Containerisierung**|**Docker & DevContainers**|Reproduzierbare Build-Umgebungen; Trennung von Host- und Target-System.|
-|**Build-System**|CMake / Colcon|Standard für C++ und ROS 2 Projekte.|
-|**Qualitätssicherung**|GTest / GMock / Linter|Sicherstellung der Code-Qualität durch Unit-Tests und statische Analyse.|
+|**Languages**|C++20 / C|Performance and modern language features (Smart Pointers, Ranges).|
+|**Middleware**|**ROS 2 (Humble/Iron)**|Industry standard for robotics; uses DDS for reliable communication.|
+|**Communication**|**micro-ROS (USB/Serial)**|Native ROS 2 nodes on MCUs; uses XRCE-DDS for resource-efficient Pub/Sub communication.|
+|**Containerization**|**Docker & DevContainers**|Reproducible build environments; separation of host and target systems.|
+|**Build System**|CMake / Colcon|Standard for C++ and ROS 2 projects.|
+|**Quality Assurance**|GTest / GMock / Linter|Ensuring code quality through unit tests and static analysis.|
 
 ---
 
-## 🏗 Systemarchitektur
+## 🏗 System Architecture
 
-Die Architektur folgt dem Muster eines modernen Fahrzeug-E/E-Systems, nutzt jedoch eine direkte serielle Verbindung:
+The architecture follows the pattern of a modern vehicle E/E system, but uses a direct serial connection:
 
 1. **Low-Level Layer (Firmware):**
     
-    - **Basis:** ESP32 oder STM32.
+    - **Base:** ESP32.
         
-    - **Aufgabe:** Motoransteuerung (PWM), Encoder-Auslesung, Not-Aus-Logik.
+    - **Task:** Motor control (PWM), encoder reading, emergency stop logic.
         
-    - **Schnittstelle:** **micro-ROS Client** (publiziert native ROS 2 Topics wie `/odom`).
+    - **Interface:** **micro-ROS Client** (publishes native ROS 2 topics like `/odom`).
         
 2. **Middle Layer (Middleware):**
     
-    - **Basis:** Raspberry Pi oder Jetson Nano (Dockerized ROS 2).
+    - **Base:** Raspberry Pi or Jetson Nano (Dockerized ROS 2).
         
-    - **Aufgabe:** Betrieb des **micro-ROS Agent**, der die Verbindung zwischen MCU und dem restlichen ROS-Graph herstellt.
+    - **Task:** Operating the **micro-ROS Agent**, which establishes the connection between the MCU and the rest of the ROS graph.
         
-3. **High-Level Layer (Applikation):**
+3. **High-Level Layer (Application):**
     
-    - **Aufgabe:** Mapping, Pfadplanung (Nav2), Hinderniserkennung.
+    - **Task:** Mapping, path planning (Nav2), obstacle detection.
         
 
-> Die zugehörige Ordnerstruktur findest du in der [Ordnerstruktur](docs/setup/setup_windows.md#3-einrichtung-des-projekts) der Setup-Anleitung.
+> You can find the corresponding folder structure in the [Folder Structure](docs/setup/setup_windows.md#3-project-setup) of the setup guide.
 ---
 
-## 🔄 Entwicklungsprozess
+## 🔄 Development Process
 
-Um Professionalität zu wahren, nutzen wir einen **Git-basierten Workflow**:
+To maintain professionalism, we use a **Git-based workflow**:
 
-### 1. Dokumentation (Markdown-First)
+### 1. Documentation (Markdown-First)
 
-- **ADRs (Architecture Decision Records):** Jede große Entscheidung (z. B. Wechsel von CAN zu USB/micro-ROS) wird in einer `.md`-Datei im Ordner `/docs/adr` begründet.
+- **ADRs (Architecture Decision Records):** Every major decision (e.g., switching from CAN to USB/micro-ROS) is justified in a `.md` file in the `/docs/adr` folder.
     
-- **API-Docs:** Inline-Dokumentation via Doxygen.
+- **API Docs:** Inline documentation via Doxygen.
     
 
-### 2. Modularer Build-Prozess
+### 2. Modular Build Process
 
-Jedes Modul ist ein eigener ROS-Package oder eine eigenständige C++ Library.
+Each module is its own ROS package or an independent C++ library.
 
-- **Entwicklung im Container:** Die gesamte Toolchain (micro-ROS Build-System, Compiler) liegt im Docker-Image.
+- **Development in Container:** The entire toolchain (micro-ROS build system, compiler) resides in the Docker image.
     
-- **CI/CD (Geplant):** Automatisierte Builds und Tests bei jedem Push via GitHub Actions.
+- **CI/CD (Planned):** Automated builds and tests on every push via GitHub Actions.
     
 
 ### 3. micro-ROS Integration
 
-Anstatt manueller Byte-Protokolle nutzen wir das **XRCE-DDS** Protokoll:
+Instead of manual byte protocols, we use the **XRCE-DDS** protocol:
 
-- Der Mikrocontroller wird als vollwertiger Teilnehmer im ROS-Netzwerk behandelt.
+- The microcontroller is treated as a full participant in the ROS network.
     
-- Kommunikation erfolgt über Standard-Messages (`geometry_msgs/Twist`, `nav_msgs/Odometry`).
+- Communication occurs via standard messages (`geometry_msgs/Twist`, `nav_msgs/Odometry`).
     
-- Kein manuelles Parsen von seriellen Datenströmen nötig; micro-ROS übernimmt die Serialisierung.
+- No manual parsing of serial data streams necessary; micro-ROS handles serialization.
     
 
 ---
 
 ## 🚀 Roadmap: Phase 1 (The "Basics")
-> Siehe dazu den [Projektstatus](STATUS.md) für den aktuellen Stand.
+> See the [Project Status](STATUS.md) for the current state.
 
-Fokus auf Hardware-naher C++ Entwicklung und Konnektivität.
+Focus on hardware-near C++ development and connectivity.
 
-- [ ] **Setup Dev-Environment:** Docker-Container mit ROS 2 und micro-ROS Komponenten.
+- [x] **Setup Dev-Environment:** Docker container with ROS 2 (and micro-ROS components).
     
-- [ ] **Firmware "Drive-Unit":** micro-ROS Node auf dem MCU zur Steuerung der Motoren.
+- [ ] **Firmware "Drive-Unit":** micro-ROS node on the MCU for controlling the motors.
     
-- [ ] **Topic-Definition:** Implementierung der Subscriber für `/cmd_vel` und Publisher für `/battery_state`.
+- [ ] **Topic Definition:** Implementation of subscribers for `/cmd_vel` and publishers for `/battery_state`.
     
-- [ ] **ROS 2 Integration:** Validierung der Kommunikation zwischen Pi und MCU über den micro-ROS Agent.
+- [ ] **ROS 2 Integration:** Validation of communication between Pi and MCU via the micro-ROS agent.
