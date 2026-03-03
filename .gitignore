@@ -27,6 +27,7 @@ ros2_ws/log/
 .piolibdeps/
 .pio/build/
 .pio/libdeps/
+libdeps/
 
 # Python
 __pycache__/
@@ -37,6 +38,11 @@ venv/
 ENV/
 env/
 .env
+
+# QEMU / Binaries
+tools/
+firmware/drive_unit/flash_image.bin
+firmware/mav-esp-drive/flash_image.bin
 
 # Logs and databases
 *.log

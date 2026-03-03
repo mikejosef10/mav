@@ -1,0 +1,61 @@
+# --- Stage 1: Base ---
+# System dependencies and Espressif QEMU binary
+FROM ubuntu:24.04 AS base
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    xz-utils \
+    libglib2.0-0 \
+    libpixman-1-0 \
+    libgcrypt20 \
+    libsdl2-2.0-0 \
+    libslirp0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Espressif QEMU fork
+RUN mkdir -p /opt/qemu && cd /opt/qemu && \
+    wget https://github.com/espressif/qemu/releases/download/esp-develop-9.2.2-20250817/qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz && \
+    tar -xvf qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz --strip-components=1 && \
+    rm qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz
+
+ENV QEMU_BIN="/opt/qemu/bin/qemu-system-xtensa"
+ENV PATH="/opt/qemu/bin:${PATH}"
+
+
+# --- Stage 2: Builder ---
+# Install Python, PlatformIO and esptool
+FROM base AS builder
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir --break-system-packages platformio esptool pytest pytest-order pytest-github-actions-annotate-failures
+
+
+# --- Stage 3: Development ---
+# Environment for interactive development and manual testing
+FROM builder AS development
+
+WORKDIR /app
+# We don't COPY here to encourage volume mounting, 
+# but we provide a default shell
+CMD ["/bin/bash"]
+
+
+# --- Stage 4: CI/CD ---
+# Optimized stage for automated testing in the pipeline
+FROM builder AS ci
+
+WORKDIR /app
+# Copy the source code into the image for standalone execution
+COPY . /app/
+
+# Automatically run the test suite using pytest and generate XML report
+CMD ["pytest", "-v", "-s", "--junitxml=report.xml", "test/test_qemu.py"]

@@ -97,12 +97,15 @@ void setup() {
     // Delay serial initialization to wait for boot logs
     delay(1000); 
     Serial.begin(115200);
+    Serial.println("MAV Drive Unit started...");
+    
     set_microros_serial_transports(Serial);
     
     statusLed.begin();
     
     // Signaling: "I am ready to connect"
     statusLed.on(); delay(1000); statusLed.off(); 
+    Serial.println("SETUP_COMPLETE");
 }
 
 void loop() {

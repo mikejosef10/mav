@@ -1,0 +1,35 @@
+name: Firmware CI (Dockerized QEMU)
+
+on:
+  push:
+    branches: [ main, feature/** ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  qemu-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build QEMU Test Container
+      run: |
+        cd firmware/mav-esp-drive
+        docker build --target ci -f docker/Dockerfile.qemu -t mav-esp-drive-qemu-test .
+
+    - name: Run QEMU Test Container
+      run: |
+        cd firmware/mav-esp-drive
+        # Run the container and mount current directory to extract the report.xml
+        docker run --rm -v $(pwd):/reports mav-esp-drive-qemu-test bash -c "pytest -v -s --junitxml=/reports/report.xml test/test_qemu.py"
+
+    - name: Publish Test Report Summary
+      uses: test-summary/action@v2
+      with:
+        paths: "firmware/mav-esp-drive/report.xml"
+      if: always()

@@ -17,7 +17,7 @@ The goal of this project is to develop a modular, autonomous robotic vacuum clea
 
 ## 🛠 Technology Stack & Standards
 
-|**Area**|**Technology / Standard**|**Reasoning**|
+|**Area**|**Technology / Standard**|**Rationale**|
 |---|---|---|
 |**Languages**|C++20 / C|Performance and modern language features (Smart Pointers, Ranges).|
 |**Middleware**|**ROS 2 (Humble/Iron)**|Industry standard for robotics; uses DDS for reliable communication.|
@@ -63,18 +63,27 @@ To maintain professionalism, we use a **Git-based workflow**:
 - **ADRs (Architecture Decision Records):** Every major decision (e.g., switching from CAN to USB/micro-ROS) is justified in a `.md` file in the `/docs/adr` folder.
     
 - **API Docs:** Inline documentation via Doxygen.
-    
 
-### 2. Modular Build Process
+### 2. Testing & Simulation (Hardware-Independent)
+
+We use **QEMU (Espressif Fork)** to test firmware logic without a physical ESP32.
+
+- **Running the Simulation:**
+  ```bash
+  export PATH=$PATH:$(pwd)/.venv/bin
+  pytest -v -s firmware/mav-esp-drive/test/test_qemu.py
+  ```
+- **Details & Setup:** See [QEMU Simulation Guide](docs/explanations/qemu_simulation_guide.md).
+
+### 3. Modular Build Process
 
 Each module is its own ROS package or an independent C++ library.
 
 - **Development in Container:** The entire toolchain (micro-ROS build system, compiler) resides in the Docker image.
     
 - **CI/CD (Planned):** Automated builds and tests on every push via GitHub Actions.
-    
 
-### 3. micro-ROS Integration
+### 4. micro-ROS Integration
 
 Instead of manual byte protocols, we use the **XRCE-DDS** protocol:
 
