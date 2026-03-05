@@ -38,6 +38,6 @@ jobs:
     - name: Build and Run QEMU Test Container
       run: |
         cd firmware/drive_unit
-        docker build -f docker/Dockerfile.qemu -t drive-unit-qemu-test .
+        docker build --target ci -f docker/Dockerfile.qemu -t drive-unit-qemu-test .
         docker run --rm drive-unit-qemu-test
 >>>>>>> a7d95fe (ci: automate QEMU simulation tests using Docker)

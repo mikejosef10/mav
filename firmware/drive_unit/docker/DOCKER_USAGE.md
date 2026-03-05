@@ -1,35 +1,36 @@
 # Dockerized QEMU Testing for ESP32
 
-This directory contains the Docker configuration to run ESP32 firmware tests in a completely isolated environment using the Espressif QEMU fork.
+This Dockerfile uses a **Multi-Stage Build** to provide optimized environments for both development and CI/CD testing.
 
-## Prerequisites
-- Docker installed on your host machine.
-- WSL 2 integration enabled (if using Windows).
-
-## Files
-- `Dockerfile.qemu`: Defines the environment (Ubuntu 24.04, PlatformIO, Espressif QEMU v9.2.2).
-- `qemu_test_runner.py`: The test script (located in `../scripts/`) which is called as the entrypoint.
+## Stages
+1. **`base`**: Contains only the OS and the Espressif QEMU binaries.
+2. **`builder`**: Adds Python, PlatformIO, and esptool.
+3. **`development`**: A workspace for interactive development and debugging.
+4. **`ci`**: A standalone stage that copies the code and runs the tests automatically.
 
 ## Usage
 
-### 1. Build the Image
-Run this command from the `firmware/drive_unit` directory:
+### 1. For Development (Interactive Shell)
+Build and run the development stage. This is useful for manual debugging inside the container.
 ```bash
-docker build -f docker/Dockerfile.qemu -t drive-unit-qemu-test .
+# Build the development stage
+docker build --target development -f docker/Dockerfile.qemu -t drive-unit-dev .
+
+# Run and mount your current code as a volume for live updates
+docker run --rm -it -v $(pwd):/app drive-unit-dev
 ```
 
-### 2. Run the Test
+### 2. For CI/CD (Automated Test)
+Build and run the CI stage. This copies the current code into the image and runs the test script as the entrypoint.
 ```bash
+# Build the CI stage
+docker build --target ci -f docker/Dockerfile.qemu -t drive-unit-qemu-test .
+
+# Run the test
 docker run --rm drive-unit-qemu-test
 ```
 
-## Why use Docker for QEMU?
-1. **Zero Setup:** No need to manually download binaries or install system libraries on your host.
-2. **Consistency:** Ensures the test environment is identical to the one used in CI/CD (GitHub Actions).
-3. **Isolation:** Keeps your main development environment clean from specific emulator dependencies.
-
-## Customization
-If you want to run a different command or explore the container:
-```bash
-docker run --rm -it drive-unit-qemu-test bash
-```
+## Why Multi-Stage?
+- **Intent Separation**: Clear distinction between an interactive environment and a standalone test environment.
+- **Workflow Flexibility**: Developers can mount their code into the `development` stage for fast iteration without rebuilding the image.
+- **CI/CD Reliability**: The `ci` stage produces a self-contained image that includes exactly the code state at build time.
