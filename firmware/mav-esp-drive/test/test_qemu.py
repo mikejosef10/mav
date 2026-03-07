@@ -3,12 +3,21 @@ import subprocess
 import time
 import pytest
 
+import shutil
+
 # --- Configuration ---
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Smart tool discovery: Check venv first, then system path (for Docker)
 VENV_BIN = os.path.join(os.path.dirname(os.path.dirname(PROJECT_DIR)), ".venv/bin")
 
 PIO_CMD = os.path.join(VENV_BIN, "pio")
+if not os.path.exists(PIO_CMD):
+    PIO_CMD = shutil.which("pio") or "pio"
+
 ESP_CMD = os.path.join(VENV_BIN, "esptool")
+if not os.path.exists(ESP_CMD):
+    ESP_CMD = shutil.which("esptool") or "esptool"
 BUILD_DIR = os.path.join(PROJECT_DIR, ".pio/build/esp32dev")
 FLASH_IMAGE = os.path.join(PROJECT_DIR, "flash_image.bin")
 
