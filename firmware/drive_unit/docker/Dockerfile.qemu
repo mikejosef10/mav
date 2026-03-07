@@ -1,0 +1,44 @@
+# Base image with Python
+FROM ubuntu:24.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies (Python, QEMU deps, and merge-bin requirements)
+RUN apt-get update && apt-get install -y 
+    wget 
+    xz-utils 
+    python3 
+    python3-pip 
+    python3-venv 
+    libglib2.0-0 
+    libpixman-1-0 
+    libgcrypt20 
+    libsdl2-2.0-0 
+    libslirp0 
+    build-essential 
+    git 
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PlatformIO and esptool
+# Use --break-system-packages for Ubuntu 24.04 since we want it global in the container
+RUN pip3 install --no-cache-dir --break-system-packages platformio esptool
+
+# Download and install Espressif QEMU fork
+RUN mkdir -p /opt/qemu && cd /opt/qemu && 
+    wget https://github.com/espressif/qemu/releases/download/esp-develop-9.2.2-20250817/qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz && 
+    tar -xvf qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz --strip-components=1 && 
+    rm qemu-xtensa-softmmu-esp_develop_9.2.2_20250817-x86_64-linux-gnu.tar.xz
+
+# Set Environment Variables
+ENV QEMU_BIN="/opt/qemu/bin/qemu-system-xtensa"
+ENV PATH="/opt/qemu/bin:${PATH}"
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files (context should be firmware/drive_unit)
+COPY . /app/
+
+# Entrypoint: Run the test runner script
+CMD ["python3", "scripts/qemu_test_runner.py"]
