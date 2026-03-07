@@ -17,7 +17,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-<<<<<<< HEAD
     - name: Build QEMU Test Container
       run: |
         cd firmware/mav-esp-drive
@@ -34,10 +33,3 @@ jobs:
       with:
         paths: "firmware/mav-esp-drive/report.xml"
       if: always()
-=======
-    - name: Build and Run QEMU Test Container
-      run: |
-        cd firmware/drive_unit
-        docker build --target ci -f docker/Dockerfile.qemu -t drive-unit-qemu-test .
-        docker run --rm drive-unit-qemu-test
->>>>>>> a7d95fe (ci: automate QEMU simulation tests using Docker)
