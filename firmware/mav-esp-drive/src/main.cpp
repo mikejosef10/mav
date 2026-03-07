@@ -98,16 +98,21 @@ void setup() {
     delay(1000); 
     Serial.begin(115200);
     
-    // Milestones for QEMU simulation (Must be before micro-ROS which might hang/reboot in QEMU)
-    Serial.println("MAV Drive Unit started...");
-    Serial.println("SETUP_COMPLETE");
+    Serial.println("[SYS] MAV Drive Unit starting...");
     
-    set_microros_serial_transports(Serial);
-    
+    // Feature: LED
     statusLed.begin();
+    Serial.println("[LED] Initialized");
     
     // Signaling: "I am ready to connect"
-    statusLed.on(); delay(1000); statusLed.off(); 
+    statusLed.on(); delay(500); statusLed.off(); 
+    Serial.println("[LED] Test pattern completed");
+    
+    // Feature: micro-ROS
+    set_microros_serial_transports(Serial);
+    Serial.println("[uROS] Transport initialized");
+    
+    Serial.println("[SYS] Setup complete");
 }
 
 void loop() {
