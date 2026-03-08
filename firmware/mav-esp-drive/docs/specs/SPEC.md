@@ -6,30 +6,34 @@
 - **Node Name:** `mav_drive_unit`
 
 ### Topics
-| Topic | Type | Direction | Description |
-|---|---|---|---|
-| `/mav/status/heartbeat` | `std_msgs/Int32` | Publisher | Increments every second (1 Hz). |
-| `/mav/cmd/led` | `std_msgs/Bool` | Subscriber | Controls the Status LED (`true` = ON, `false` = OFF). |
+| ID | Topic | Type | Direction | Description | Verification |
+|---|---|---|---|---|---|
+| **REQ-COM-01** | `/mav/status/heartbeat` | `std_msgs/Int32` | Publisher | Increments every second (1 Hz). | `test_qemu.py` / `[uROS] Transport initialized` |
+| **REQ-COM-02** | `/mav/cmd/led` | `std_msgs/Bool` | Subscriber | Controls the Status LED (`true` = ON, `false` = OFF). | `test_qemu.py` / `[uROS] Transport initialized` |
 
 ## Hardware Mapping
-- **MCU:** ESP32 (32-bit Dual Core)
-- **Status LED Pin:** GPIO 2 (Active High)
-- **Baud Rate:** 115200 (Serial Transport)
+| ID | Component | Pin / Value | Description | Verification |
+|---|---|---|---|---|
+| **REQ-HW-01** | MCU | ESP32 | 32-bit Dual Core | PlatformIO Env |
+| **REQ-HW-02** | Status LED | GPIO 2 | Active High | `[LED] Initialized` |
+| **REQ-HW-03** | Baud Rate | 115200 | Serial Transport | `platformio.ini` |
 
 ## System Behavior
 
 ### Startup Sequence
-1. Wait 1000ms.
-2. Initialize Serial (115200 baud).
-3. Set Status LED to `OUTPUT`.
-4. Turn LED **ON** for 1000ms, then **OFF**.
+| ID | Step | Detail | Verification |
+|---|---|---|---|
+| **REQ-SYS-01** | Boot Delay | Wait 1000ms. | `[SYS] MAV Drive Unit starting...` |
+| **REQ-SYS-02** | Serial Init | Initialize Serial (115200 baud). | `[SYS] MAV Drive Unit starting...` |
+| **REQ-SYS-03** | LED Init | Set Status LED to `OUTPUT`. | `[LED] Initialized` |
+| **REQ-SYS-04** | LED Blink | Turn LED **ON** for 1000ms, then **OFF**. | `[LED] Test pattern completed` |
 
 ### Status LED Codes
-| Behavior | Meaning |
-|---|---|
-| **Constant OFF** | Normal operation (Connected to micro-ROS). |
-| **Blinking (100ms ON / 100ms OFF)** | Execution error / Spin failure. |
-| **Blinking (500ms ON / 500ms OFF)** | micro-ROS Initialization failure. |
+| ID | Behavior | Meaning | Verification |
+|---|---|---|---|
+| **REQ-SYS-05** | **Constant OFF** | Normal operation (Connected to micro-ROS). | Manual |
+| **REQ-SYS-06** | **Blinking (100ms)** | Execution error / Spin failure. | Manual |
+| **REQ-SYS-07** | **Blinking (500ms)** | micro-ROS Initialization failure. | Manual |
 
 ## Software Architecture
 - **Framework:** Arduino

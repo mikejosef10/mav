@@ -6,6 +6,8 @@ The goal of this project is to develop a modular, autonomous robotic vacuum clea
 
 ### Core Philosophy
 
+- **Spec-Driven Development (SDD):** Documentation is the "Single Source of Truth". Code is only an implementation of verified specifications.
+
 - **Hardware Abstraction:** Software runs isolated from the hardware through defined interfaces.
     
 - **Native ROS 2 Integration:** Seamless communication from high-level algorithms down to motor registers using **micro-ROS**.
@@ -58,13 +60,23 @@ The architecture follows the pattern of a modern vehicle E/E system, but uses a 
 
 To maintain professionalism, we use a **Git-based workflow**:
 
-### 1. Documentation (Markdown-First)
+### 1. Spec-Driven Workflow (SDD)
+
+This project strictly follows the **MAV Engineering Protocol** defined in `.mav-rules.md`.
+
+- **Requirement First:** Every change starts with a Requirement ID (`REQ-XXX`) in the local `docs/specs/SPEC.md`.
+- **Traceability:** Tasks in `docs/tasks/` must reference these IDs.
+- **Validation:** Implementation is only complete when associated tests pass.
+
+For details, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### 2. Documentation (Markdown-First)
 
 - **ADRs (Architecture Decision Records):** Every major decision (e.g., switching from CAN to USB/micro-ROS) is justified in a `.md` file in the `/docs/adr` folder.
     
 - **API Docs:** Inline documentation via Doxygen.
 
-### 2. Testing & Simulation (Hardware-Independent)
+### 3. Testing & Simulation (Hardware-Independent)
 
 We use **QEMU (Espressif Fork)** to test firmware logic without a physical ESP32.
 
@@ -75,7 +87,7 @@ We use **QEMU (Espressif Fork)** to test firmware logic without a physical ESP32
   ```
 - **Details & Setup:** See [QEMU Simulation Guide](docs/explanations/qemu_simulation_guide.md).
 
-### 3. Modular Build Process
+### 4. Modular Build Process
 
 Each module is its own ROS package or an independent C++ library.
 
@@ -83,7 +95,7 @@ Each module is its own ROS package or an independent C++ library.
     
 - **CI/CD (Planned):** Automated builds and tests on every push via GitHub Actions.
 
-### 4. micro-ROS Integration
+### 5. micro-ROS Integration
 
 Instead of manual byte protocols, we use the **XRCE-DDS** protocol:
 
