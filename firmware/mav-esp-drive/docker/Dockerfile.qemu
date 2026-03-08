@@ -34,9 +34,37 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     build-essential \
     git \
+    curl \
+    cmake \
+    ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir --break-system-packages platformio esptool pytest pytest-order pytest-github-actions-annotate-failures
+# Set environment variable to allow pip to install packages system-wide if needed (PEP 668)
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Use official PlatformIO Core installer to ensure 'penv' is correctly set up
+# This solves the "/root/.platformio/penv/bin/activate" missing error for micro-ROS
+RUN curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py -o get-platformio.py && \
+    python3 get-platformio.py && \
+    rm get-platformio.py
+
+# Add PlatformIO to PATH
+ENV PATH="/root/.platformio/penv/bin:${PATH}"
+
+# Install additional test and micro-ROS dependencies into the PlatformIO virtual environment
+RUN pip install --no-cache-dir \
+    esptool \
+    pytest \
+    pytest-order \
+    pytest-github-actions-annotate-failures \
+    catkin-pkg \
+    lark-parser \
+    colcon-common-extensions \
+    importlib-resources \
+    pyyaml \
+    pytz \
+    markupsafe==2.0.1 \
+    empy==3.3.4
 
 
 # --- Stage 3: Development ---
