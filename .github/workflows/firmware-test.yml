@@ -28,8 +28,10 @@ jobs:
         # Run the container and mount current directory to extract the report.xml
         docker run --rm -v $(pwd):/reports mav-esp-drive-qemu-test bash -c "pytest -v -s --junitxml=/reports/report.xml test/test_qemu.py"
 
-    - name: Publish Test Report Summary
-      uses: test-summary/action@v2
-      with:
-        paths: "firmware/mav-esp-drive/report.xml"
+    - name: Test Report
+      uses: dorny/test-reporter@v1
       if: always()
+      with:
+        name: QEMU Test Results
+        path: "firmware/mav-esp-drive/report.xml"
+        reporter: java-junit # pytest --junitxml erzeugt JUnit-Format
