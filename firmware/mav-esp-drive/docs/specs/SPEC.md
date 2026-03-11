@@ -17,6 +17,11 @@
 | **REQ-HW-01** | MCU | ESP32 | 32-bit Dual Core | PlatformIO Env |
 | **REQ-HW-02** | Status LED | GPIO 2 | Active High | `[LED] Initialized` |
 | **REQ-HW-03** | Baud Rate | 115200 | Serial Transport | `platformio.ini` |
+| **REQ-MOT-01** | Motor A (PWM) | GPIO 25 | Speed Control Motor A | PWM Signal |
+| **REQ-MOT-02** | Motor A (DIR) | GPIO 26, 27 | Direction Control Motor A | Logic Level |
+| **REQ-MOT-03** | Motor B (PWM) | GPIO 32 | Speed Control Motor B | PWM Signal |
+| **REQ-MOT-04** | Motor B (DIR) | GPIO 33, 21 | Direction Control Motor B | Logic Level |
+| **REQ-MOT-05** | Motor STBY | GPIO 22 | Enable Driver (High) | Logic Level |
 
 ## System Behavior
 
