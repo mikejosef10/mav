@@ -12,7 +12,7 @@
 - [x] **Phase 0.1: AI Agent Integration** (Status: 100%)
 - [ ] **Phase 1: Connectivity & Drive** (Status: 55%)
     - [x] micro-ROS Base Communication
-    - [x] Hardware Acquisition (N20 Motors, TB6612FNG, UPS)
+    - [x] Hardware Acquisition (N20, TB6612, Ansmann 2S, SkyRC B6neo)
     - [ ] PWM Motor Driver (REQ-MOT-01) - *Active Integration*
     - [ ] Encoder Feedback (REQ-ENC-01)
 - [ ] **Phase 2: Perception & SLAM** (Status: 0%)
@@ -32,4 +32,4 @@
 - **Requirement Gap:** Motor control pins for TB6612FNG need to be assigned in `firmware/mav-esp-drive/docs/specs/SPEC.md`.
 
 ---
-*Last Updated: 2026-03-11 (SDD Standard v1.2)*
+*Last Updated: 2026-03-14 (SDD Standard v1.2)*

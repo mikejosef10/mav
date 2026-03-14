@@ -22,6 +22,8 @@
 | **REQ-MOT-03** | Motor B (PWM) | GPIO 32 | Speed Control Motor B | PWM Signal |
 | **REQ-MOT-04** | Motor B (DIR) | GPIO 33, 21 | Direction Control Motor B | Logic Level |
 | **REQ-MOT-05** | Motor STBY | GPIO 22 | Enable Driver (High) | Logic Level |
+| **REQ-MOT-06** | Motor A (ENC) | GPIO 34, 35 | Encoder A/B Motor A | Hall Pulses |
+| **REQ-MOT-07** | Motor B (ENC) | GPIO 36, 39 | Encoder A/B Motor B | Hall Pulses |
 
 ## System Behavior
 
@@ -32,13 +34,14 @@
 | **REQ-SYS-02** | Serial Init | Initialize Serial (115200 baud). | `[SYS] MAV Drive Unit starting...` |
 | **REQ-SYS-03** | LED Init | Set Status LED to `OUTPUT`. | `[LED] Initialized` |
 | **REQ-SYS-04** | LED Blink | Turn LED **ON** for 1000ms, then **OFF**. | `[LED] Test pattern completed` |
+| **REQ-SYS-05** | Motor Init | Set Motor PWM/DIR pins to `OUTPUT`. | `[MOT] Initialized` |
 
 ### Status LED Codes
 | ID | Behavior | Meaning | Verification |
 |---|---|---|---|
-| **REQ-SYS-05** | **Constant OFF** | Normal operation (Connected to micro-ROS). | Manual |
-| **REQ-SYS-06** | **Blinking (100ms)** | Execution error / Spin failure. | Manual |
-| **REQ-SYS-07** | **Blinking (500ms)** | micro-ROS Initialization failure. | Manual |
+| **REQ-SYS-06** | **Constant OFF** | Normal operation (Connected to micro-ROS). | Manual |
+| **REQ-SYS-07** | **Blinking (100ms)** | Execution error / Spin failure. | Manual |
+| **REQ-SYS-08** | **Blinking (500ms)** | micro-ROS Initialization failure. | Manual |
 
 ## Software Architecture
 - **Framework:** Arduino

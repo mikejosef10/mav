@@ -26,9 +26,11 @@ To ensure "Component Autonomy" (.mav-rules.md), the physical robot is divided in
 ## 🔋 REQ-HW-PWR: Power Distribution
 | ID | Requirement | Value / Detail | Verification |
 |---|---|---|---|
-| **REQ-PWR-01** | Battery Cell | 2x 18650 Li-Ion (3.7V nominal) | Multimeter |
-| **REQ-PWR-02** | SBC Power | UPS HAT for Raspberry Pi (5V / 3A) | `vcgencmd get_throttled` |
-| **REQ-PWR-03** | MCU Power | LM2596 Buck Converter (to 5V) | Logic stability |
+| **REQ-PWR-01** | Battery Pack | Ansmann 2S1P Li-Ion (7.2V / 3500mAh) | Voltage Check (7.2V - 8.4V) |
+| **REQ-PWR-02** | Charger | SkyRC B6neo (Li-Ion 2S Mode / 1.7A) | Full Charge Cycle |
+| **REQ-PWR-03** | Connector | XT30U (Gold-plated, 30A rated) | Connectivity Test |
+| **REQ-PWR-04** | Logic Power | ESP32 internal LDO via VIN (7.2V to 3.3V) | Serial stability |
+| **REQ-PWR-05** | SBC Power | *Planned: 5V/3A Buck Converter for RPi 4* | `vcgencmd get_throttled` |
 
 ---
 
