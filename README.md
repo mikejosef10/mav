@@ -62,13 +62,13 @@ To maintain professionalism, we use a **Git-based workflow**:
 
 ### 1. Spec-Driven Workflow (SDD)
 
-This project strictly follows the **MAV Engineering Protocol** defined in `.mav-rules.md`.
+This project strictly follows the **MAV Engineering Protocol** defined in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 - **Requirement First:** Every change starts with a Requirement ID (`REQ-XXX`) in the local `docs/specs/SPEC.md`.
 - **Traceability:** Tasks in `docs/tasks/` must reference these IDs.
 - **Validation:** Implementation is only complete when associated tests pass.
 
-For details, see [CONTRIBUTING.md](CONTRIBUTING.md).
+For details, see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ### 2. Documentation (Markdown-First)
 
@@ -109,7 +109,7 @@ Instead of manual byte protocols, we use the **XRCE-DDS** protocol:
 ---
 
 ## 🚀 Roadmap: Phase 1 (The "Basics")
-> See the [Project Status](STATUS.md) for the current state.
+> See the [Project Status](docs/STATUS.md) for the current state.
 
 Focus on hardware-near C++ development and connectivity.
 
